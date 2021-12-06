@@ -1,5 +1,5 @@
 -- delete and create database
-DROP DATABASE task_scheme;
+DROP DATABASE IF EXISTS task_scheme;
 
 CREATE DATABASE task_scheme;
 

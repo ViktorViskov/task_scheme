@@ -3,8 +3,8 @@ from core.db import Mysql_Connect
 from core.lib import sql_inj_clean
 
 class Task_Controll:
-    def __init__(self) -> None:
-        self.db = Mysql_Connect("10.0.0.2", "root", "dbnmjr031193", "task_scheme")
+    def __init__(self, db_config: object) -> None:
+        self.db = Mysql_Connect(db_config["host"], db_config["user"], db_config["password"], db_config["db_name"])
 
     def Create_Task(self, title: str, description: str, user_id: int):
         self.db.Connect()

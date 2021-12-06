@@ -14,11 +14,18 @@ web_server = FastAPI()
 # static files
 web_server.mount("/static", StaticFiles(directory="static"), name="static")
 
+# db config
+db_config = {}
+db_config["host"] = "127.0.0.1"
+db_config["user"] = "root"
+db_config["password"] = "dbnmjr031193"
+db_config["db_name"] = "task_scheme"
+
 # auth
-auth = Auth()
+auth = Auth(db_config)
 
 # task controll
-tc = Task_Controll()
+tc = Task_Controll(db_config)
 
 # 
 # Routes
@@ -42,6 +49,10 @@ async def register_user(name:str = Form(...), surname:str = Form(...), login:str
 @web_server.get("/login")
 async def login_page():
     return HTMLResponse(content=open("src/login.html").read(),status_code=200)
+
+@web_server.post("/login")
+async def login_user(login:str = Form(...), password:str = Form(...)):
+    return auth.Login(login, password)
 
 @web_server.get("/create")
 async def create_page():

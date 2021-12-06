@@ -12,8 +12,8 @@ from hashlib import sha256
 # class for auth
 class Auth:
     # init
-    def __init__(self) -> None:
-        self.db = Mysql_Connect("10.0.0.2", "root", "dbnmjr031193", "task_scheme")
+    def __init__(self, db_config: object) -> None:
+        self.db = Mysql_Connect(db_config["host"], db_config["user"], db_config["password"], db_config["db_name"])
     
     def Register(self, name: str, surname: str, login: str, password:str, password_confirm:str):
         # check for password
@@ -63,6 +63,8 @@ class Auth:
 
     # check for user and return id
     def Get_User_Id(self, token: str):
+        if token == None:
+            return -1
         self.db.Connect()
         result = self.db.IO("SELECT user_id FROM user_sessions WHERE token = '%s'" % (sql_inj_clean(token)))
         self.db.Close()
