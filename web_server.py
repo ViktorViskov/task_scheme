@@ -68,6 +68,28 @@ async def create_task(token: Optional[str] = Cookie(None), title:str = Form(...)
     else:
         return HTMLResponse("Not auth", 401)
 
+# get all tasks
+@web_server.get("/tasks")
+async def get_tasks(token: Optional[str] = Cookie(None)):
+    user_id = auth.Get_User_Id(token)
+    if user_id != -1:
+        return tc.Get_All_Tasks(user_id)
+    else:
+        return HTMLResponse("Not auth", 401)
+
+@web_server.get("/delete")
+async def delete_page():
+    return HTMLResponse(content=open("src/delete.html").read(),status_code=200)
+
+# Delete task
+@web_server.post("/delete")
+async def delete_task(token: Optional[str] = Cookie(None), task_id :int = Form(...)):
+    user_id = auth.Get_User_Id(token)
+    if user_id != -1:
+        return tc.Delete_Task(user_id, task_id)
+    else:
+        return HTMLResponse("Not auth", 401)
+
 
 # panel
 @web_server.get("/panel")
