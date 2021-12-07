@@ -4,12 +4,44 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello world page</title>
+    <title>VUE js</title>
+    <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
-    <a href="register">Registration</a>
-    <a href="login">Login</a>
-    <a href="panel">Panel</a>
-    Hello world
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <div id="root">
+        <!-- check conditions for auth -->
+        <div v-if="(isAuth)">
+            <div>
+                <!-- nav items -->
+                <input type="radio" name="page" id="tasks" checked>
+                <label for="tasks">Taks</label>
+                <input type="radio" name="page" id="create">
+                <label for="create">Create</label>
+    
+                <!-- content to items -->
+                <div class="tasks">
+                    <div v-for="task in tasks">
+                        <h3>{{task[1]}}</h3>
+                        <div>{{task[2]}}</div>
+                        <button @click="DeleteTask(task[0])">Delete</button>
+                    </div>
+                </div>
+                <div class="create">
+                    <input type="text" v-model="task_title">
+                    <input type="text" v-model="task_description">
+                    <input type="datetime-local" v-model="task_start">
+                    <input type="datetime-local" v-model="task_stop">
+                    <button @click="CreateTask">Create</button>
+                </div>
+            </div>
+        </div>
+        <div v-else>
+            <input type="text" placeholder="login" v-model="userLogin">
+            <input type="password" placeholder="password" v-model="userPassword">
+            <button @click="Login(userLogin, userPassword)">Login</button>
+        </div>
+    </div>
+    <script src="/static/app.js"></script>
 </body>
 </html>

@@ -1,0 +1,16 @@
+.create {
+  display: none;
+}
+
+#create:checked ~ .create {
+  display: block;
+}
+
+.tasks {
+  display: none;
+}
+
+#tasks:checked ~ .tasks {
+    display: block;
+}
+  

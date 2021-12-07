@@ -7,10 +7,10 @@ class Task_Controll:
     def __init__(self, db_config: object) -> None:
         self.db = Mysql_Connect(db_config["host"], db_config["user"], db_config["password"], db_config["db_name"])
 
-    def Create_Task(self, title: str, description: str, user_id: int):
+    def Create_Task(self, title: str, description: str, user_id: int, start :str, stop: str):
         self.db.Connect()
         # create task
-        task_id = self.db.I("INSERT INTO tasks (title, description) VALUES ('%s','%s')" % (sql_inj_clean(title), sql_inj_clean(description)))
+        task_id = self.db.I("INSERT INTO tasks (title, description, start, stop) VALUES ('%s','%s','%s','%s')" % (sql_inj_clean(title), sql_inj_clean(description), sql_inj_clean(start), sql_inj_clean(stop)))
 
         # create reations
         self.db.I("INSERT INTO user_task_relation (user_id, task_id) VALUES ('%s','%s')" % (user_id, task_id))
@@ -21,7 +21,7 @@ class Task_Controll:
     
     def Get_All_Tasks(self, user_id: int):
         self.db.Connect()
-        tasks = self.db.IO("SELECT tasks.id, tasks.title, tasks.description FROM tasks, user_task_relation WHERE user_task_relation.user_id = %s AND user_task_relation.task_id = tasks.id" % (user_id))
+        tasks = self.db.IO("SELECT tasks.id, tasks.title, tasks.description, tasks.start, tasks.stop FROM tasks, user_task_relation WHERE user_task_relation.user_id = %s AND user_task_relation.task_id = tasks.id" % (user_id))
         self.db.Close()
         return tasks
     
