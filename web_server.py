@@ -18,10 +18,10 @@ web_server.mount("/static", StaticFiles(directory="static"), name="static")
 
 # db config
 db_config = {}
-db_config["host"] = "127.0.0.1"
+db_config["host"] = "10.0.0.2"
 db_config["user"] = "root"
 db_config["password"] = "dbnmjr031193"
-db_config["db_name"] = "task_scheme"
+db_config["db_name"] = "task_scheme_orm"
 
 # auth
 auth = Auth(db_config)
@@ -67,7 +67,8 @@ async def create_task(token: Optional[str] = Cookie(None), title:str = Form(...)
 async def get_tasks(token: Optional[str] = Cookie(None)):
     user_id = auth.Get_User_Id(token)
     if user_id != -1:
-        return tc.Get_All_Tasks(user_id)
+        return HTMLResponse("Auth %s" %(user_id), 200)
+        # return tc.Get_All_Tasks(user_id)
     else:
         return HTMLResponse("Not auth", 401)
 
