@@ -73,7 +73,7 @@ class Auth:
     # Check for authorisation
     def Check_Auth(self, token: str):
         # check for token none
-        if token == None:
+        if token == None or token == "":
             return False
         
         # check session

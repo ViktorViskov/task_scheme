@@ -22,13 +22,14 @@ let app = new Vue({
     methods: {
 
         Login: async function () {
-
-            console.log(this.userLogin, this.userPassword);
-
             // create form data 
             let formData = new FormData();
             formData.append("login", this.userLogin);
             formData.append("password", this.userPassword);
+
+            // delete user users
+            this.userLogin = "";
+            this.userPassword = "";
 
             // request to server
             await fetch('/login', {
@@ -94,6 +95,15 @@ let app = new Vue({
 
         UpdateStopTime: function () {
             this.task_stop = this.task_start
+        },
+
+        Exit: function () {
+            // delete all cookies
+            // document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
+            document.cookie = "token="
+
+            this.isAuth = false;
+            console.log(document.cookie);
         }
     },
 

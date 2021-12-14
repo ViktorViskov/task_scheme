@@ -84,7 +84,7 @@ async def delete_task(token: Optional[str] = Cookie(None), task_id :int = Form(.
 # panel
 @web_server.get("/is_auth")
 async def is_auth(token: Optional[str] = Cookie(None)):
-    if token != None or auth.Check_Auth(token):
+    if token != None and auth.Check_Auth(token):
         return JSONResponse({"status":True}, 200)
     else:
         return JSONResponse({"status":False}, 200)
