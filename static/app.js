@@ -21,12 +21,14 @@ let app = new Vue({
 
     methods: {
 
-        Login: async function (userLogin, userPassword) {
+        Login: async function () {
+
+            console.log(this.userLogin, this.userPassword);
 
             // create form data 
             let formData = new FormData();
-            formData.append("login",userLogin);
-            formData.append("password",userPassword);
+            formData.append("login", this.userLogin);
+            formData.append("password", this.userPassword);
 
             // request to server
             await fetch('/login', {
@@ -35,7 +37,12 @@ let app = new Vue({
             });
 
             // check for auth
-            this.CheckAuth()
+            await this.CheckAuth()
+
+            // logick for load task after login
+            if (this.isAuth) {
+                this.LoadTasks()
+            }
         },
 
         CheckAuth: async function () {
@@ -83,6 +90,10 @@ let app = new Vue({
 
             // update tasks
             this.LoadTasks();
+        },
+
+        UpdateStopTime: function () {
+            this.task_stop = this.task_start
         }
     },
 

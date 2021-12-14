@@ -43,23 +43,15 @@ async def main_page():
 async def register_page():
     return HTMLResponse(content=open("src/register.html").read(),status_code=200)
 
+# register request
 @web_server.post("/register")
 async def register_user(name:str = Form(...), surname:str = Form(...), login:str = Form(...) , password: str = Form(...), password_confirm: str = Form(...)):
     return auth.Register(name, surname, login, password, password_confirm)
 
-# login page
-@web_server.get("/login")
-async def login_page():
-    return HTMLResponse(content=open("src/login.html").read(),status_code=200)
-
+# login request
 @web_server.post("/login")
 async def login_user(login:str = Form(...), password:str = Form(...)):
-    return auth.Login(login, password)
-
-@web_server.get("/create")
-async def create_page():
-    return HTMLResponse(content=open("src/task_create.html").read(),status_code=200)
-    
+    return auth.Login(login, password)    
 
 # create task
 @web_server.post("/create")
@@ -78,10 +70,6 @@ async def get_tasks(token: Optional[str] = Cookie(None)):
         return tc.Get_All_Tasks(user_id)
     else:
         return HTMLResponse("Not auth", 401)
-
-@web_server.get("/delete")
-async def delete_page():
-    return HTMLResponse(content=open("src/delete.html").read(),status_code=200)
 
 # Delete task
 @web_server.post("/delete")
