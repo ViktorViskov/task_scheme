@@ -1,9 +1,8 @@
 # lib
 from base64 import encode
 
-from starlette.responses import HTMLResponse, JSONResponse
+from starlette.responses import JSONResponse
 from core.db import Mysql_Connect
-from core.lib import sql_inj_clean
 from datetime import  datetime
 from hashlib import sha256
 
@@ -20,16 +19,12 @@ class Auth:
         if (password != password_confirm):
             return JSONResponse({"detail":"Passwords not same"}, 400)
         else:
-            # connect to db
-            self.db.Connect()
             # check for user not created 
-            result = self.db.IO("SELECT id FROM users WHERE login = '%s'" % sql_inj_clean(login))
+            result = self.db.O("SELECT id FROM users WHERE login = %s" , login)
             if len(result) == 0:
-                self.db.I("INSERT INTO users (name,surname,login,password) VALUES ('%s','%s','%s','%s');" % (sql_inj_clean(name), sql_inj_clean(surname), sql_inj_clean(login.lower()), sql_inj_clean(password)))
-                self.db.Close()
+                self.db.I("INSERT INTO users (name,surname,login,password) VALUES (%s,%s,%s,%s)" , name, surname, login.lower(), password)
                 return JSONResponse(content={"message":"Created"}, status_code=200)
             else:
-                self.db.Close()
                 return JSONResponse(content={"detail":"Login not awailable"},status_code=400)
 
     def Login(self, login:str, password: str):
@@ -47,16 +42,13 @@ class Auth:
         data_to_hash = "%s%s%s%s" % (login.lower(), password, "key", datetime.now().timestamp())
         hashed_string = sha256(data_to_hash.encode("utf-8")).hexdigest()
 
-        # create session in db
-        self.db.Connect()
-        db_response = self.db.IO("SELECT id FROM users WHERE login = '%s' AND password = '%s'" % (login.lower(), password))
+        db_response = self.db.O("SELECT id FROM users WHERE login = %s AND password = %s" ,login.lower(), password)
         if len(db_response) > 0:
             # get user id
             user_id = db_response[0][0]
             # delete all old session
-            self.db.I("DELETE FROM user_sessions WHERE user_id = '%s'" % (user_id))
-            self.db.I("INSERT INTO user_sessions (user_id, token) VALUES ('%s','%s')" % (user_id, hashed_string))
-            self.db.Close()
+            self.db.I("DELETE FROM user_sessions WHERE user_id = %s" ,user_id)
+            self.db.I("INSERT INTO user_sessions (user_id, token) VALUES (%s,%s)" ,user_id, hashed_string)
             return hashed_string
         else:
             return ""
@@ -65,9 +57,7 @@ class Auth:
     def Get_User_Id(self, token: str):
         if token == None:
             return -1
-        self.db.Connect()
-        result = self.db.IO("SELECT user_id FROM user_sessions WHERE token = '%s'" % (sql_inj_clean(token)))
-        self.db.Close()
+        result = self.db.O("SELECT user_id FROM user_sessions WHERE token = %s" ,token)
         return result[0][0] if len(result) > 0 else -1
 
     # Check for authorisation
@@ -77,9 +67,7 @@ class Auth:
             return False
         
         # check session
-        self.db.Connect()
-        result = self.db.IO("SELECT user_id FROM user_sessions WHERE token = '%s'" % (sql_inj_clean(token)))
-        self.db.Close()
+        result = self.db.O("SELECT user_id FROM user_sessions WHERE token = %s" ,token)
         return True if len(result) > 0 else False
     
 

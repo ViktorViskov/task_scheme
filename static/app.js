@@ -99,8 +99,7 @@ let app = new Vue({
 
         Exit: function () {
             // delete all cookies
-            // document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
-            document.cookie = "token="
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
 
             this.isAuth = false;
             console.log(document.cookie);

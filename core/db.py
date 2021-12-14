@@ -3,7 +3,6 @@
 #
 
 # libs
-from os import error
 import mysql.connector
 
 
@@ -17,40 +16,50 @@ class Mysql_Connect:
         self.password = password
         self.db = db
 
-    # create connection
-    def Connect(self):
-        # connection
-        self.connection = mysql.connector.connect(
-            host=self.host, user=self.user, passwd=self.password, database=self.db)
-
-        # io buffer cursor
-        self.cursor = self.connection.cursor()
-
-    # Close connection
-    def Close(self):
-        self.connection.close()
-
-    # Input (not read server ansver)
-    def I(self, sql_command):
+    # Input (not read server answer)
+    def I(self, sql_command, *data):
         try:
-            # exec command
-            self.cursor.execute(sql_command)
-            self.connection.commit()
-            return self.cursor.lastrowid
+            # create connection and cursor
+            connection = mysql.connector.connect(host=self.host, user=self.user, passwd=self.password, database=self.db)
+            cursor = connection.cursor()
 
-        except error:
-            print(sql_command)
-            print(error)
-            print("DB connection error")
+            # exec command and accept changes
+            cursor.execute(sql_command, data)
+            connection.commit()
 
-    # Input and Outpur
+            # Last inputed id
+            last_id = cursor.lastrowid
 
-    def IO(self, sql_command):
-        try:
-            # exec command
-            self.cursor.execute(sql_command)
-            # read result
-            return self.cursor.fetchall()
+            # Close cursor and connection
+            cursor.close()
+            connection.close()
+
+            return last_id
+            
         except:
-            print("DB connection error")
+            print(sql_command)
+            print("DB connection error I")
+            return None
+
+    # Output read server answer
+
+    def O(self, sql_command, *data):
+        try:
+            # create connection and cursor
+            connection = mysql.connector.connect(host=self.host, user=self.user, passwd=self.password, database=self.db)
+            cursor = connection.cursor()
+
+            # exec command and read result
+            cursor.execute(sql_command, data)
+            db_response = cursor.fetchall()
+
+            # Close cursor and connection
+            cursor.close()
+            connection.close()
+
+            return db_response
+
+        except:
+            print(sql_command)
+            print("DB connection error O")
             return None
