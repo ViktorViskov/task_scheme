@@ -115,7 +115,7 @@ let app = new Vue({
             // update current start stop time
             const currentDate = new Date()
             this.task_start = `${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDate()}T${currentDate.getHours()}:${currentDate.getMinutes()}`
-            this.task_stop = `${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDate()}T${currentDate.getHours()}:${currentDate.getMinutes()}`
+            this.task_stop = `${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDate()}T${currentDate.getHours() + 1 > 23 ? currentDate.getHours() : currentDate.getHours() + 1}:${currentDate.getMinutes()}`
         }
     }
 
