@@ -17,7 +17,7 @@ web_server.mount("/static", StaticFiles(directory="static"), name="static")
 
 # db config
 db_config = {}
-db_config["host"] = "127.0.0.1"
+db_config["host"] = "10.0.0.2"
 db_config["user"] = "root"
 db_config["password"] = "dbnmjr031193"
 db_config["db_name"] = "task_scheme"
@@ -67,6 +67,15 @@ async def get_tasks(token: Optional[str] = Cookie(None)):
     user_id = auth.Get_User_Id(token)
     if user_id != -1:
         return tc.Get_All_Tasks(user_id)
+    else:
+        return HTMLResponse("Not auth", 401)
+
+# get tasks from date
+@web_server.post("/date_tasks")
+async def get_date_tasks(token: Optional[str] = Cookie(None), date_start:str = Form(...), date_stop:str = Form(...)):
+    user_id = auth.Get_User_Id(token)
+    if user_id != -1:
+        return tc.Get_Tasks_From_Date(user_id, date_start, date_stop)
     else:
         return HTMLResponse("Not auth", 401)
 

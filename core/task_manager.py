@@ -18,6 +18,10 @@ class Task_Controll:
     def Get_All_Tasks(self, user_id: int):
         tasks = self.db.O("SELECT tasks.id, tasks.title, tasks.description, tasks.start, tasks.stop FROM tasks, user_task_relation WHERE user_task_relation.user_id = %s AND user_task_relation.task_id = tasks.id", user_id)
         return tasks
+
+    def Get_Tasks_From_Date(self, user_id: int, date_start: str, date_stop: str):
+        tasks = self.db.O("SELECT tasks.id, tasks.title, tasks.description, tasks.start, tasks.stop FROM tasks, user_task_relation WHERE user_task_relation.user_id = %s AND user_task_relation.task_id = tasks.id AND tasks.start >= %s AND tasks.start <= %s", user_id, date_start, date_stop)
+        return tasks
     
     def Delete_Task(self, user_id:int, task_id: int):
         task_desc = self.db.O("SELECT user_task_relation.task_id FROM user_task_relation WHERE user_id = %s AND task_id = %s" , user_id, task_id)

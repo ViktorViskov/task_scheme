@@ -17,6 +17,12 @@ let app = new Vue({
         task_description: "",
         task_start: "",
         task_stop: "",
+
+        // look task on month, date
+        date_tasks: "",
+
+        // total used time 
+        total: 0,
     },
 
     methods: {
@@ -52,6 +58,46 @@ let app = new Vue({
 
         LoadTasks: async function () {
             await fetch('/tasks').then(response => response.json()).then(data => this.tasks = data);
+            this.TotalTime()
+        },
+
+        DayTasks: async function () {
+            // create form data 
+            let formData = new FormData();
+            let parsed_date = new Date(this.date_tasks)
+            formData.append("date_start",`${parsed_date.getFullYear()}-${parsed_date.getMonth()+1}-${parsed_date.getDate()}T00:00`);
+            formData.append("date_stop",`${parsed_date.getFullYear()}-${parsed_date.getMonth()+1}-${parsed_date.getDate()}T23:59`);
+
+            // create task on server
+            await fetch('/date_tasks', {
+                method: "POST",
+                body: formData                
+            }).then(response => response.json()).then(data => this.tasks = data);
+            this.TotalTime()
+        },
+
+        MonthTasks: async function () {
+            // create form data 
+            let formData = new FormData();
+            let parsed_date_start = new Date(`${this.date_tasks}-01T00:00`)
+            console.log(`${this.date_tasks}-1T00:00`);
+            let parsed_date_stop = new Date(parsed_date_start.getFullYear(),parsed_date_start.getMonth()+1, 0)
+            console.log(parsed_date_start);
+            console.log(parsed_date_stop);
+
+            formData.append("date_start",`${parsed_date_start.getFullYear()}-${parsed_date_start.getMonth()+1}-1T00:00`);
+            formData.append("date_stop",`${parsed_date_stop.getFullYear()}-${parsed_date_stop.getMonth()+1}-${parsed_date_stop.getDate()}T23:59`);
+
+            // create task on server
+            await fetch('/date_tasks', {
+                method: "POST",
+                body: formData                
+            }).then(response => response.json()).then(data => this.tasks = data);
+            this.TotalTime()
+        },
+
+        UpdateStopTime: function () {
+            this.task_stop = this.task_start
         },
 
         CreateTask: async function () {
@@ -96,9 +142,20 @@ let app = new Vue({
         Exit: function () {
             // delete all cookies
             document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
-
             this.isAuth = false;
-            console.log(document.cookie);
+        },
+
+        TotalTime: function () {
+            this.total = 0
+            let minutes = 0
+            for (let i = 0; i < this.tasks.length; i++) {
+                const start = new Date(this.tasks[i][3])
+                const stop = new Date(this.tasks[i][4])
+                const different = stop.getTime() - start.getTime()
+                minutes += different > 0 ? different / 1000 / 60: 0;
+            }
+
+            this.total = `${Math.floor(minutes / 60)}:${minutes - (Math.floor(minutes / 60) * 60)}`
         }
     },
 
@@ -112,10 +169,10 @@ let app = new Vue({
             // load tasks
             this.LoadTasks()
 
-            // update current start stop time
+            // update current start stop time for create page
             const currentDate = new Date()
-            this.task_start = `${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDate()}T${currentDate.getHours()}:${currentDate.getMinutes()}`
-            this.task_stop = `${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDate()}T${currentDate.getHours() + 1 > 23 ? currentDate.getHours() : currentDate.getHours() + 1}:${currentDate.getMinutes()}`
+            this.task_start = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}T${currentDate.getHours()}:${currentDate.getMinutes()}`
+            this.task_stop = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}T${currentDate.getHours() + 1 > 23 ? currentDate.getHours() : currentDate.getHours() + 1}:${currentDate.getMinutes()}`
         }
     }
 

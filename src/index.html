@@ -22,9 +22,14 @@
     
                 <!-- content to items -->
                 <div class="tasks">
+                    <input type="date" name="" id="" v-model="date_tasks" @change="DayTasks">
+                    <input type="month" name="" id="" v-model="date_tasks" @change="MonthTasks">
+                    <div>Total: {{total}}</div>
                     <div v-for="task in tasks">
                         <h3>{{task[1]}}</h3>
                         <div>{{task[2]}}</div>
+                        <div>Start: <input type="datetime-local" :value="task[3]" readonly></div>
+                        <div>Stop: <input type="datetime-local" :value="task[4]" readonly></div>
                         <button @click="DeleteTask(task[0])">Delete</button>
                     </div>
                 </div>
@@ -32,7 +37,7 @@
                     <h3>
                         <input type="text" v-model="task_title">
                         <input type="text" v-model="task_description">
-                        <input type="datetime-local" v-model="task_start">
+                        <input type="datetime-local" v-model="task_start" @change="UpdateStopTime">
                         <input type="datetime-local" v-model="task_stop">
                         <button @click="CreateTask">Create</button>
                     </h3>
