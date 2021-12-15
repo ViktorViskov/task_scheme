@@ -7,7 +7,6 @@ from typing import Optional
 
 from starlette.responses import JSONResponse
 from core.auth import Auth
-from core.lib import *
 from core.task_manager import Task_Controll
 
 # web server

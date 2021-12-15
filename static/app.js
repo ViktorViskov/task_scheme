@@ -93,10 +93,6 @@ let app = new Vue({
             this.LoadTasks();
         },
 
-        UpdateStopTime: function () {
-            this.task_stop = this.task_start
-        },
-
         Exit: function () {
             // delete all cookies
             document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
@@ -113,7 +109,13 @@ let app = new Vue({
 
         // if user auth load tasks
         if (this.isAuth) {
+            // load tasks
             this.LoadTasks()
+
+            // update current start stop time
+            const currentDate = new Date()
+            this.task_start = `${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDate()}T${currentDate.getHours()}:${currentDate.getMinutes()}`
+            this.task_stop = `${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDate()}T${currentDate.getHours()}:${currentDate.getMinutes()}`
         }
     }
 
