@@ -80,10 +80,7 @@ let app = new Vue({
             // create form data 
             let formData = new FormData();
             let parsed_date_start = new Date(`${this.date_tasks}-01T00:00`)
-            console.log(`${this.date_tasks}-1T00:00`);
             let parsed_date_stop = new Date(parsed_date_start.getFullYear(),parsed_date_start.getMonth()+1, 0)
-            console.log(parsed_date_start);
-            console.log(parsed_date_stop);
 
             formData.append("date_start",`${parsed_date_start.getFullYear()}-${parsed_date_start.getMonth()+1}-1T00:00`);
             formData.append("date_stop",`${parsed_date_stop.getFullYear()}-${parsed_date_stop.getMonth()+1}-${parsed_date_stop.getDate()}T23:59`);

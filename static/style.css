@@ -39,7 +39,6 @@
 }
 
 #tasks:checked ~ .tasks {
-  background-color: lightgray;
   display: block;
 }
   

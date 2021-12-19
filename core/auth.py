@@ -22,13 +22,17 @@ class Auth:
             # check for user not created 
             result = self.db.O("SELECT id FROM users WHERE login = %s" , login)
             if len(result) == 0:
-                self.db.I("INSERT INTO users (name,surname,login,password) VALUES (%s,%s,%s,%s)" , name, surname, login.lower(), password)
+                password += "Password1!"
+                hashed_password = sha256(password.encode("utf-8")).hexdigest()
+                self.db.I("INSERT INTO users (name,surname,login,password) VALUES (%s,%s,%s,%s)" , name, surname, login.lower(), hashed_password)
                 return JSONResponse(content={"message":"Created"}, status_code=200)
             else:
                 return JSONResponse(content={"detail":"Login not awailable"},status_code=400)
 
     def Login(self, login:str, password: str):
-        hash_string = self.Create_Session(login, password)
+        password += "Password1!"
+        hashed_password = sha256(password.encode("utf-8")).hexdigest()
+        hash_string = self.Create_Session(login, hashed_password)
         if hash_string != "":
             response = JSONResponse({"message":"Cookies enable"})
             response.set_cookie(key="token", value=hash_string)
