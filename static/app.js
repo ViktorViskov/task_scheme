@@ -40,7 +40,7 @@ let app = new Vue({
             // request to server
             await fetch('/login', {
                 method: "POST",
-                body: formData                
+                body: formData
             });
 
             // check for auth
@@ -65,13 +65,13 @@ let app = new Vue({
             // create form data 
             let formData = new FormData();
             let parsed_date = new Date(this.date_tasks)
-            formData.append("date_start",`${parsed_date.getFullYear()}-${parsed_date.getMonth()+1}-${parsed_date.getDate()}T00:00`);
-            formData.append("date_stop",`${parsed_date.getFullYear()}-${parsed_date.getMonth()+1}-${parsed_date.getDate()}T23:59`);
+            formData.append("date_start", `${parsed_date.getFullYear()}-${parsed_date.getMonth() + 1}-${parsed_date.getDate()}T00:00`);
+            formData.append("date_stop", `${parsed_date.getFullYear()}-${parsed_date.getMonth() + 1}-${parsed_date.getDate()}T23:59`);
 
             // create task on server
             await fetch('/date_tasks', {
                 method: "POST",
-                body: formData                
+                body: formData
             }).then(response => response.json()).then(data => this.tasks = data);
             this.TotalTime()
         },
@@ -80,15 +80,15 @@ let app = new Vue({
             // create form data 
             let formData = new FormData();
             let parsed_date_start = new Date(`${this.date_tasks}-01T00:00`)
-            let parsed_date_stop = new Date(parsed_date_start.getFullYear(),parsed_date_start.getMonth()+1, 0)
+            let parsed_date_stop = new Date(parsed_date_start.getFullYear(), parsed_date_start.getMonth() + 1, 0)
 
-            formData.append("date_start",`${parsed_date_start.getFullYear()}-${parsed_date_start.getMonth()+1}-1T00:00`);
-            formData.append("date_stop",`${parsed_date_stop.getFullYear()}-${parsed_date_stop.getMonth()+1}-${parsed_date_stop.getDate()}T23:59`);
+            formData.append("date_start", `${parsed_date_start.getFullYear()}-${parsed_date_start.getMonth() + 1}-1T00:00`);
+            formData.append("date_stop", `${parsed_date_stop.getFullYear()}-${parsed_date_stop.getMonth() + 1}-${parsed_date_stop.getDate()}T23:59`);
 
             // create task on server
             await fetch('/date_tasks', {
                 method: "POST",
-                body: formData                
+                body: formData
             }).then(response => response.json()).then(data => this.tasks = data);
             this.TotalTime()
         },
@@ -100,21 +100,19 @@ let app = new Vue({
         CreateTask: async function () {
             // create form data 
             let formData = new FormData();
-            formData.append("title",this.task_title);
-            formData.append("description",this.task_description);
-            formData.append("start",this.task_start);
-            formData.append("stop",this.task_stop);
+            formData.append("title", this.task_title);
+            formData.append("description", this.task_description);
+            formData.append("start", this.task_start);
+            formData.append("stop", this.task_stop);
 
             // override values
             this.task_title = "",
             this.task_description = "",
-            this.task_start = "",
-            this.task_stop = "",
 
             // create task on server
             await fetch('/create', {
                 method: "POST",
-                body: formData                
+                body: formData
             });
 
             // update tasks
@@ -124,12 +122,12 @@ let app = new Vue({
         DeleteTask: async function (id) {
             // create form data 
             let formData = new FormData();
-            formData.append("task_id",id);
+            formData.append("task_id", id);
 
             // delete on server
             await fetch('/delete', {
-                method: "POST",
-                body: formData                
+                method: "DELETE",
+                body: formData
             });
 
             // update tasks
@@ -149,7 +147,7 @@ let app = new Vue({
                 const start = new Date(this.tasks[i][3])
                 const stop = new Date(this.tasks[i][4])
                 const different = stop.getTime() - start.getTime()
-                minutes += different > 0 ? different / 1000 / 60: 0;
+                minutes += different > 0 ? different / 1000 / 60 : 0;
             }
 
             this.total = `${Math.floor(minutes / 60)}:${minutes - (Math.floor(minutes / 60) * 60)}`
@@ -166,11 +164,11 @@ let app = new Vue({
             // load tasks
             this.LoadTasks()
 
-            // update current start stop time for create page
-            const currentDate = new Date()
-            this.task_start = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}T${currentDate.getHours()}:${currentDate.getMinutes()}`
-            this.task_stop = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}T${currentDate.getHours() + 1 > 23 ? currentDate.getHours() : currentDate.getHours() + 1}:${currentDate.getMinutes()}`
         }
+        // update current start stop time for create page
+        const currentDate = new Date()
+        this.task_start = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}T${currentDate.getHours()}:${currentDate.getMinutes()}`
+        this.task_stop = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}T${currentDate.getHours() + 1 > 23 ? currentDate.getHours() : currentDate.getHours() + 1}:${currentDate.getMinutes()}`
     }
 
 

@@ -3,6 +3,7 @@ from fastapi import FastAPI, Cookie
 from fastapi.param_functions import Form
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 
 from starlette.responses import JSONResponse
@@ -27,6 +28,17 @@ auth = Auth(db_config)
 
 # task controll
 tc = Task_Controll(db_config)
+
+# 
+# CORS
+# 
+web_server.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # 
 # Routes
@@ -80,7 +92,7 @@ async def get_date_tasks(token: Optional[str] = Cookie(None), date_start:str = F
         return HTMLResponse("Not auth", 401)
 
 # Delete task
-@web_server.post("/delete")
+@web_server.delete("/delete")
 async def delete_task(token: Optional[str] = Cookie(None), task_id :int = Form(...)):
     user_id = auth.Get_User_Id(token)
     if user_id != -1:

@@ -22,9 +22,18 @@
     
                 <!-- content to items -->
                 <div class="tasks">
-                    <input type="date" name="" id="" v-model="date_tasks" @change="DayTasks">
-                    <input type="month" name="" id="" v-model="date_tasks" @change="MonthTasks">
-                    <div>Total: {{total}}</div>
+                    <div>
+                        <label for="dayTasks">Tasks in dag</label>
+                        <input type="date" id="dayTasks" v-model="date_tasks" @change="DayTasks">
+                    </div>
+                    <div>
+                        <label for="monthTasks">Tasks in month</label>
+                        <input type="month" id="monthTasks" v-model="date_tasks" @change="MonthTasks">
+                    </div>
+                    <div>
+                        <button @click="LoadTasks"> All tasks</button>
+                    </div>
+                    <h2>Total: {{total}}</h2>
                     <div v-for="task in tasks">
                         <h3>{{task[1]}}</h3>
                         <div>{{task[2]}}</div>
