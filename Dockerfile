@@ -1,7 +1,6 @@
 # maintainer info
 FROM alpine:latest
 LABEL maintainer="carrergt@gmail.com"
-ENV DB_ADDR="10.0.0.2"
 
 # config container
 RUN apk add py3-pip py3-wheel py3-jwt
