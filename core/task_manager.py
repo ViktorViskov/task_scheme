@@ -1,6 +1,8 @@
 # module for CRUD with task
 from starlette.responses import JSONResponse
 from core.db import Mysql_Connect
+from core.models import Task
+from typing import List
 
 class Task_Controll:
     def __init__(self, db_config: object) -> None:
@@ -16,12 +18,14 @@ class Task_Controll:
         return JSONResponse(content={"message":"Task Created"}, status_code=200)
     
     def Get_All_Tasks(self, user_id: int):
-        tasks = self.db.O("SELECT tasks.id, tasks.title, tasks.description, tasks.start, tasks.stop FROM tasks, user_task_relation WHERE user_task_relation.user_id = %s AND user_task_relation.task_id = tasks.id", user_id)
-        return tasks
+        db_records = self.db.O("SELECT tasks.id, tasks.title, tasks.description, tasks.start, tasks.stop FROM tasks, user_task_relation WHERE user_task_relation.user_id = %s AND user_task_relation.task_id = tasks.id", user_id)
+        return list(map(Task.from_array,db_records))
+
 
     def Get_Tasks_From_Date(self, user_id: int, date_start: str, date_stop: str):
-        tasks = self.db.O("SELECT tasks.id, tasks.title, tasks.description, tasks.start, tasks.stop FROM tasks, user_task_relation WHERE user_task_relation.user_id = %s AND user_task_relation.task_id = tasks.id AND tasks.start >= %s AND tasks.start <= %s", user_id, date_start, date_stop)
-        return tasks
+        db_records = self.db.O("SELECT tasks.id, tasks.title, tasks.description, tasks.start, tasks.stop FROM tasks, user_task_relation WHERE user_task_relation.user_id = %s AND user_task_relation.task_id = tasks.id AND tasks.start >= %s AND tasks.start <= %s", user_id, date_start, date_stop)
+        return list(map(Task.from_array,db_records))
+
     
     def Delete_Task(self, user_id:int, task_id: int):
         task_desc = self.db.O("SELECT user_task_relation.task_id FROM user_task_relation WHERE user_id = %s AND task_id = %s" , user_id, task_id)

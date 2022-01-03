@@ -2,19 +2,16 @@
 from fastapi import FastAPI, Cookie
 from fastapi.param_functions import Form
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from typing import Optional
+from typing import Dict, List, Optional
 
-from starlette.responses import JSONResponse
 from core.auth import Auth
+from core.models import Task
 from core.task_manager import Task_Controll
 
 # web server
 web_server = FastAPI()
-
-# static files
-web_server.mount("/static", StaticFiles(directory="static"), name="static")
 
 # db config
 db_config = {}
@@ -47,12 +44,7 @@ web_server.add_middleware(
 # VUE js app
 @web_server.get("/")
 async def main_page():
-    return HTMLResponse(content=open("src/index.html").read(),status_code=200)
-
-# register page
-@web_server.get("/register")
-async def register_page():
-    return HTMLResponse(content=open("src/register.html").read(),status_code=200)
+    return HTMLResponse(content=open("dist/index.html").read(),status_code=200)
 
 # register request
 @web_server.post("/register")
@@ -74,7 +66,7 @@ async def create_task(token: Optional[str] = Cookie(None), title:str = Form(...)
         return HTMLResponse("Not auth", 401)
 
 # get all tasks
-@web_server.get("/tasks")
+@web_server.post("/tasks", response_model=List[Task])
 async def get_tasks(token: Optional[str] = Cookie(None)):
     user_id = auth.Get_User_Id(token)
     if user_id != -1:
@@ -83,7 +75,7 @@ async def get_tasks(token: Optional[str] = Cookie(None)):
         return HTMLResponse("Not auth", 401)
 
 # get tasks from date
-@web_server.post("/date_tasks")
+@web_server.post("/date_tasks", response_model=List[Task])
 async def get_date_tasks(token: Optional[str] = Cookie(None), date_start:str = Form(...), date_stop:str = Form(...)):
     user_id = auth.Get_User_Id(token)
     if user_id != -1:
@@ -108,3 +100,6 @@ async def is_auth(token: Optional[str] = Cookie(None)):
         return JSONResponse({"status":True}, 200)
     else:
         return JSONResponse({"status":False}, 200)
+
+# static files
+web_server.mount("/", StaticFiles(directory="dist"), name="dist")

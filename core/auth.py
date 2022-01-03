@@ -116,7 +116,6 @@ class Auth:
     
     # Delete token from db
     def Delete_Token(self, token:str):
-        print("Token %s" % token)
         self.db.I("DELETE FROM user_sessions WHERE token = %s" , token)        
     
 
