@@ -2,6 +2,8 @@
 db_addr="127.0.0.1"
 db_user="root"
 db_password="dbnmjr031193"
+db_name="task_scheme"
 
 # exe command
 mysql -h $db_addr -u $db_user -p$db_password < install.sql
+echo "{\"addr\": \"$db_addr\",\"user\": \"$db_user\",\"password\": \"$db_password\",\"name\": \"$db_name\"}" > db_config.json
