@@ -2,6 +2,7 @@
 import jwt
 from starlette.responses import JSONResponse
 from core.db import Mysql_Connect
+from core.models import DB_CONF
 from datetime import  date, datetime
 from hashlib import sha256
 
@@ -10,7 +11,7 @@ from hashlib import sha256
 # class for auth
 class Auth:
     # init
-    def __init__(self, db_config: object) -> None:
+    def __init__(self, db_config: DB_CONF) -> None:
         # variables
         self.token_secret = ".sufKwpF3vAH-4Xv1KLc1wVefQzfqj18Wi83vXK6TeiM'½"
         self.additional_password_str = "Password1!"
@@ -18,7 +19,7 @@ class Auth:
         self.session_period = 3600 * 12 # session period in sec (default 12 hours)
 
         # init modules
-        self.db = Mysql_Connect(db_config["host"], db_config["user"], db_config["password"], db_config["db_name"])
+        self.db = Mysql_Connect(db_config.addr, db_config.user, db_config.password, db_config.name)
     
     def Register(self, name: str, surname: str, login: str, password:str, password_confirm:str):
         # check for password

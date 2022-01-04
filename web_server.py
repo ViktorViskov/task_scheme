@@ -1,24 +1,29 @@
 # libs
+from os import name
 from fastapi import FastAPI, Cookie
 from fastapi.param_functions import Form
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from typing import Dict, List, Optional
+
+from typing import List, Optional
+from os.path import isfile
 
 from core.auth import Auth
-from core.models import Task
+from core.models import Task, DB_CONF
 from core.task_manager import Task_Controll
 
 # web server
 web_server = FastAPI()
 
-# db config
-db_config = {}
-db_config["host"] = "192.168.111.45"
-db_config["user"] = "root"
-db_config["password"] = "dbnmjr031193"
-db_config["db_name"] = "task_scheme"
+path_to_config = "db_config.json" # path to config file
+# check for file with configs
+if (isfile(path_to_config)):
+    db_config = DB_CONF.parse_file(path_to_config)
+
+else:
+    # default config
+    db_config = DB_CONF(addr="localhost", user="root", password="Password1!", name="db_name")
 
 # auth
 auth = Auth(db_config)

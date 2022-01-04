@@ -15,3 +15,10 @@ class Task(BaseModel):
     def from_array(values):
         root_obj = Task(id = values[0], title = values[1], desc = values[2], start = values[3],stop = values[4])
         return root_obj
+
+# db config
+class DB_CONF(BaseModel):
+    addr:str
+    user:str
+    password:str
+    name:str

@@ -1,12 +1,12 @@
 # module for CRUD with task
 from starlette.responses import JSONResponse
 from core.db import Mysql_Connect
-from core.models import Task
+from core.models import Task, DB_CONF
 from typing import List
 
 class Task_Controll:
-    def __init__(self, db_config: object) -> None:
-        self.db = Mysql_Connect(db_config["host"], db_config["user"], db_config["password"], db_config["db_name"])
+    def __init__(self, db_config: DB_CONF) -> None:
+        self.db = Mysql_Connect(db_config.addr, db_config.user, db_config.password, db_config.name)
 
     def Create_Task(self, title: str, description: str, user_id: int, start :str, stop: str):
         # create task
