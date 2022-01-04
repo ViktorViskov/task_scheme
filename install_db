@@ -1,0 +1,7 @@
+# main server config
+db_addr="127.0.0.1"
+db_user="root"
+db_password="dbnmjr031193"
+
+# exe command
+mysql -h $db_addr -u $db_user -p$db_password < install.sql
