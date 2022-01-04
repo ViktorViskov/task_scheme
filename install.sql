@@ -39,7 +39,7 @@ CREATE TABLE user_task_relation (
 CREATE TABLE user_sessions (
     id int NOT NULL AUTO_INCREMENT UNIQUE,
     user_id int,
-    token varchar(64),
+    token varchar(1028),
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES users(id)
 );

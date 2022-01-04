@@ -15,7 +15,7 @@ web_server = FastAPI()
 
 # db config
 db_config = {}
-db_config["host"] = "10.0.0.2"
+db_config["host"] = "192.168.111.45"
 db_config["user"] = "root"
 db_config["password"] = "dbnmjr031193"
 db_config["db_name"] = "task_scheme"
